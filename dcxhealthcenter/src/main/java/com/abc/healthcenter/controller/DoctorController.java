@@ -108,7 +108,7 @@ public class DoctorController {
 	@GetMapping("/login")
 	public ResponseEntity<?> checkCredentials(@Valid @RequestBody DoctorLogin doctor){
 		boolean result = doctorService.checkDoctorCredentials(doctor);
-		if (result == true) {
+		if (result) {
 			response.setMsg("Successfully logged in");
 			response.setStatus(HttpStatus.FOUND.value());
 			return new ResponseEntity<>(response,HttpStatus.FOUND);
