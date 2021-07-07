@@ -38,6 +38,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 		return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
 	}
+
+	@ExceptionHandler(value = InvalidCredentialsException.class)
+	public ResponseEntity<ErrorResponse> InvalidCredentialsException(Exception e){
+		ErrorResponse errorResponse = new ErrorResponse();
+		errorResponse.setError(e.getMessage());
+		errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+		return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
+	}
 	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
