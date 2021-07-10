@@ -4,20 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import java.time.LocalDate;
 import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import com.abc.healthcenter.entity.AppointmentEntity;
 import com.abc.healthcenter.entity.DoctorEntity;
 import com.abc.healthcenter.entity.PatientEntity;
 import com.abc.healthcenter.model.Appointment;
-import com.abc.healthcenter.model.Doctor;
 import com.abc.healthcenter.repository.AppointmentRepository;
 
 /**

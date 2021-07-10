@@ -33,12 +33,6 @@ import com.abc.healthcenter.model.Payment;
 	 */
 	public void deletePaymentbyId(int id) throws ResourceNotFoundException;
 
-	/**
-	 * 
-	 * @param payment
-	 * @throws ResourceNotFoundException
-	 */
-	public void updatePayment(Payment payment) throws ResourceNotFoundException;
 
 	
 

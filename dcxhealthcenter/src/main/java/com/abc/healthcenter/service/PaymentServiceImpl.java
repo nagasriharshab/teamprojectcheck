@@ -30,7 +30,7 @@ public class PaymentServiceImpl implements PaymentService{
 
 	/**
 	 * Implements Save Payment Details from PaymentService Interface
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void makePayment(Payment payment) throws ResourceAlreadyExistException {
