@@ -33,9 +33,9 @@ public class DoctorServiceTest {
 	private DoctorServiceImp doctorServiceImp;
 	
 	@Test
-	public void testFindbyId() {
+	public void testFindbyDoctorId() {
 		DoctorEntity  doctor = new DoctorEntity();
-		doctor.setDoctorID(101);
+		doctor.setDoctorId(101);
 		doctor.setDoctorName("ash");
 		doctor.setDoctorEmail("ash@gmail.com");
 		doctor.setDoctorContact(68479483723L);
@@ -54,7 +54,7 @@ public class DoctorServiceTest {
 		assertEquals(doctor.getDoctorContact(),doctorModel.getDoctorContact());
 	}
 	
-	
+	/**
 	@Test
 	public void testSaveDoctor() {
 		Doctor doctor = new Doctor();
@@ -87,9 +87,38 @@ public class DoctorServiceTest {
 		//Optional<DoctorEntity> optionalDoctor = Optional .of(doctorEntity);
 		//when(doctorRepository.findById(101)).thenReturn(optionalDoctor);
 		//verify(doctorRepository,times(1)).save(doctorEntity);
-		}
-	public void testFindbyIdThrowingException(){
+		}*/
+	
+	@Test
+	public void testFindbyDoctorIdThrowingException(){
 		when(doctorRepository.findById(144)).thenThrow(ResourceNotFoundException.class);
 		assertThrows(ResourceNotFoundException.class,()->doctorServiceImp.findDoctorbyId(144));
+	}
+	
+	@Test
+	public void testfindbyDoctorName() {
+		DoctorEntity  doctor = new DoctorEntity();
+		doctor.setDoctorId(101);
+		doctor.setDoctorName("ash");
+		doctor.setDoctorEmail("ash@gmail.com");
+		doctor.setDoctorContact(68479483723L);
+		doctor.setDoctorDepartment("general");
+		doctor.setDoctorExperience(3);
+		doctor.setDoctorGender("MALE");
+		doctor.setDoctorQualification("M.S,M.D");
+		doctor.setDoctorAddress("OSMANIA CAFE,Tadepalligudem");
+		doctor.setDoctorUserName("ASH");
+		doctor.setDoctorPassword("ASH");
+		Optional<DoctorEntity> doctorEntity = Optional.of(doctor);
+		when(doctorRepository.findByDoctorName("ash")).thenReturn(doctorEntity);
+		Doctor doctorModel = doctorServiceImp.findDoctorbyName("ash");
+		assertEquals(doctorModel.getDoctorContact(),doctor.getDoctorContact());
+		assertEquals(doctorModel.getDoctorDepartment(),doctor.getDoctorDepartment());
+		assertEquals(doctorModel.getDoctorEmail(),doctor.getDoctorEmail());
+	}
+	@Test
+	public void testFindbyDoctorNameThrowingException(){
+		when(doctorRepository.findByDoctorName("harsha")).thenThrow(ResourceNotFoundException.class);
+		assertThrows(ResourceNotFoundException.class,()->doctorServiceImp.findDoctorbyName("harsha"));
 	}
 }

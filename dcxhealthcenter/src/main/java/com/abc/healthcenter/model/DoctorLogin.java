@@ -8,8 +8,9 @@ package com.abc.healthcenter.model;
  * date : 07-July-2021
  */
 public class DoctorLogin {
-	String doctorUserName;
-	String doctorPassword;
+	private String doctorUserName;
+	private String doctorPassword;
+	
 	/**
 	 * @return the doctorUserName
 	 */

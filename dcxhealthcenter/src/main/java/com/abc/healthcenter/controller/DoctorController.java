@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.abc.healthcenter.model.Doctor;
+import com.abc.healthcenter.model.DoctorForgetPassword;
 import com.abc.healthcenter.model.DoctorLogin;
 import com.abc.healthcenter.model.Response;
 import com.abc.healthcenter.service.DoctorService;
@@ -45,7 +46,7 @@ public class DoctorController {
 	 * @return response entity containing the reply to request made and the status
 	 */
 	@PostMapping("/save")
-	public ResponseEntity<?> addDoctor(@Valid @RequestBody Doctor doctor){
+	public ResponseEntity<Object> addDoctor(@Valid @RequestBody Doctor doctor){
 		LOGGER.info("doctorServiceImp::saveDoctor(Doctor doctor) method called");
 		doctorService.saveDoctor(doctor);
 		response.setMsg("Hello Doctor "+doctor.getDoctorName()+", Welcome to DCX HealthCare.Your details are saved and now you can login with your username and password to check your appointments");
@@ -59,7 +60,7 @@ public class DoctorController {
 	 * @return response entity containing the reply to request made and the status
 	 */
 	@PostMapping("/find/{id}")
-	public ResponseEntity<?> findDoctor(@Valid @Min(1) @PathVariable int id){
+	public ResponseEntity<Object> findDoctor(@Valid @Min(1) @PathVariable int id){
 		LOGGER.info("doctorServiceImp::findDoctor(Doctor doctor) method called");
 		Doctor doctor = doctorService.findDoctorbyId(id);
 		return new ResponseEntity<>(doctor,HttpStatus.FOUND);
@@ -71,7 +72,7 @@ public class DoctorController {
 	 * @return response entity containing the reply to request made and the status
 	 */
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<?> deleteDoctor(@Valid @Min(1) @PathVariable int id){
+	public ResponseEntity<Object> deleteDoctor(@Valid @Min(1) @PathVariable int id){
 		doctorService.deleteDoctorbyId(id);
 		response.setMsg("Deleted successfully");
 		response.setStatus(HttpStatus.FOUND.value());
@@ -83,7 +84,7 @@ public class DoctorController {
 	 * @return response entity containing the reply to request made and the status
 	 */
 	@PostMapping("/findbyName/{name}")
-	public ResponseEntity<?> findDoctorbyNameMethod(@Valid @PathVariable String name){
+	public ResponseEntity<Object> findDoctorbyNameMethod(@Valid @PathVariable String name){
 		Doctor doctor = doctorService.findDoctorbyName(name);
 		return new ResponseEntity<>(doctor,HttpStatus.FOUND);
 	}
@@ -93,7 +94,7 @@ public class DoctorController {
 	 * @return response entity containing the reply to request made and the status
 	 */
 	@PutMapping("/update")
-	public ResponseEntity<?> updateDoctor(@Valid @RequestBody Doctor doctor){
+	public ResponseEntity<Object> updateDoctor(@Valid @RequestBody Doctor doctor){
 		doctorService.updateDoctorbyId(doctor);
 		response.setMsg("Hello Doctor "+doctor.getDoctorName()+",details are updated");
 		response.setStatus(HttpStatus.FOUND.value());
@@ -106,17 +107,18 @@ public class DoctorController {
 	 * @return response entity containing the login attempt result
 	 */
 	@GetMapping("/login")
-	public ResponseEntity<?> checkCredentials(@Valid @RequestBody DoctorLogin doctor){
-		boolean result = doctorService.checkDoctorCredentials(doctor);
-		if (result) {
+	public ResponseEntity<Object> checkCredentials(@Valid @RequestBody DoctorLogin doctorLogin){
+		
+			doctorService.checkDoctorCredentials(doctorLogin);
 			response.setMsg("Successfully logged in");
 			response.setStatus(HttpStatus.FOUND.value());
 			return new ResponseEntity<>(response,HttpStatus.FOUND);
-		}
-		else {
-			response.setMsg("Failed Login");
-			response.setStatus(HttpStatus.NOT_FOUND.value());
-			return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
-		}
+	}
+	@GetMapping("/forgetPassword")
+	public ResponseEntity<Object> forgetDoctorPassword(@Valid @RequestBody DoctorForgetPassword doctor){
+		doctorService.forgetPasword(doctor);
+		response.setMsg("Password Successfully Updated");
+		response.setStatus(HttpStatus.OK.value());
+		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 }

@@ -1,13 +1,16 @@
 package com.abc.healthcenter.service;
 
+import com.abc.healthcenter.exception.InvalidCredentialsException;
 import com.abc.healthcenter.exception.ResourceAlreadyExistException;
 import com.abc.healthcenter.exception.ResourceNotFoundException;
 
 import com.abc.healthcenter.model.Patient;
+import com.abc.healthcenter.model.PatientForgetPassword;
+import com.abc.healthcenter.model.PatientLogin;
 
 /**
  * 
- * @author admin
+ * @author likhith  A S
  *
  * date: Jul 5, 2021
  */
@@ -48,5 +51,19 @@ public interface PatientService {
 	  * @throws ResourceNotFoundException
 	  */
 	 public Patient findPatientbyName(String name) throws ResourceNotFoundException;
-
+	 
+	 /**
+	  * Method to check patient credentials
+	  * @param patientlogin
+	  * @return 
+	  * @throws InvalidCredentialsException
+	  */
+	 public boolean checkPatientCredentials(PatientLogin patientlogin) throws InvalidCredentialsException;
+	 
+	 /**
+	  * Method to change patient password
+	  * @param patientcredentials
+	  * @throws InvalidCredentialsException
+	  */
+	 public void forgetPasword(PatientForgetPassword patientcredentials) throws InvalidCredentialsException;
 }

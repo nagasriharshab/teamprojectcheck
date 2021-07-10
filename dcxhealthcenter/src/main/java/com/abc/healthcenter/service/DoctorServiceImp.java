@@ -12,6 +12,7 @@ import com.abc.healthcenter.exception.InvalidCredentialsException;
 import com.abc.healthcenter.exception.ResourceAlreadyExistException;
 import com.abc.healthcenter.exception.ResourceNotFoundException;
 import com.abc.healthcenter.model.Doctor;
+import com.abc.healthcenter.model.DoctorForgetPassword;
 import com.abc.healthcenter.model.DoctorLogin;
 import com.abc.healthcenter.repository.DoctorRepository;
 
@@ -33,12 +34,12 @@ public class DoctorServiceImp implements DoctorService{
 	 */
 	@Override
 	public void saveDoctor(Doctor doctor) throws ResourceAlreadyExistException {
-		LOGGER.info("doctorRepository::findById(int id)method called");
-		Optional<DoctorEntity> doctorEntity1 = doctorRepository.findById(doctor.getDoctorID());
+		LOGGER.info("doctorRepository::findByDoctorUserName(int id)method called");
+		Optional<DoctorEntity> doctorEntity1 = doctorRepository.findByDoctorUserName(doctor.getDoctorUserName());
 		LOGGER.info("Optional<Doctor> object saved");
 		if(doctorEntity1.isPresent()) {
-			LOGGER.error("ResourceAlreadyExistException encountered with id"+doctor.getDoctorID());
-			throw new ResourceAlreadyExistException("Doctor already exists with this ID"+doctor.getDoctorID());
+			LOGGER.error("ResourceAlreadyExistException encountered with id"+doctor.getDoctorId());
+			throw new ResourceAlreadyExistException("Doctor already exists with this ID"+doctor.getDoctorId());
 		}
 		else {
 			DoctorEntity doctorEntity = convertModeltoEntity(doctor);
@@ -103,7 +104,7 @@ public class DoctorServiceImp implements DoctorService{
 			return doctor;
 		}
 		else {
-			LOGGER.info("ResourceNotFoundException encountered with name "+name);
+			LOGGER.info("ResourceNotFoundException encountered with name ",name);
 			throw new ResourceNotFoundException("Cannot find doctor with this Name"+name);
 		}
 
@@ -117,14 +118,14 @@ public class DoctorServiceImp implements DoctorService{
 	public void updateDoctorbyId(Doctor doctor) throws ResourceNotFoundException {
 		
 		LOGGER.info("FindById method called from DoctorServiceImp::updateDoctorbyId method");
-		DoctorEntity doctorEntity = doctorRepository.findById(doctor.getDoctorID()).get();
+		DoctorEntity doctorEntity = doctorRepository.findById(doctor.getDoctorId()).get();
 		if(doctorEntity == null){
-			LOGGER.error("ResourceNotFoundException encountered with id "+doctor.getDoctorID());
-			throw new ResourceNotFoundException("Cannot find doctor with this Id"+doctor.getDoctorID());
+			LOGGER.error("ResourceNotFoundException encountered with id "+doctor.getDoctorId());
+			throw new ResourceNotFoundException("Cannot find doctor with this Id"+doctor.getDoctorId());
 		}
 		else
 		{
-			doctorEntity.setDoctorID(doctor.getDoctorID());
+			doctorEntity.setDoctorId(doctor.getDoctorId());
 			doctorEntity.setDoctorName(doctor.getDoctorName());
 			doctorEntity.setDoctorContact(doctor.getDoctorContact());
 			doctorEntity.setDoctorDepartment(doctor.getDoctorDepartment());
@@ -147,19 +148,37 @@ public class DoctorServiceImp implements DoctorService{
 	@Override
 	public boolean checkDoctorCredentials(DoctorLogin doctorlogin) throws InvalidCredentialsException {
 		Optional<DoctorEntity> doctor = doctorRepository.findByDoctorUserName(doctorlogin.getDoctorUserName());
-		
-		if(doctor.isEmpty()) {
-			
-			throw new InvalidCredentialsException("No data found with that username");
-		}
-		else {
-			if(doctorlogin.getDoctorPassword() == doctor.get().getDoctorPassword()) {
-				boolean check = true;
-				return check;
+		if(doctor.isPresent()) {
+			if(doctor.get().getDoctorPassword().equals(doctor.get().getDoctorPassword())) {
+				return true;
 			}
 			else {
-				throw new InvalidCredentialsException("Please enter correct password");
+				throw new InvalidCredentialsException("The password you are entered is wrong");
 			}
+		}
+		else {
+			throw new InvalidCredentialsException("The username is not found in our data base");
+		}
+	}
+	/**
+	 * implements forgetPassword method from DoctorServiceInterface
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void forgetPasword(DoctorForgetPassword doctorcredentials) throws InvalidCredentialsException {
+		boolean check = doctorRepository.existsByDoctorUserName(doctorcredentials.getDoctorUserName());
+		if(check) {
+			DoctorEntity doctor = doctorRepository.findByDoctorUserName(doctorcredentials.getDoctorUserName()).get();
+			if(doctor.getDoctorEmail().equals(doctorcredentials.getDoctorEmail())) {
+				doctor.setDoctorPassword(doctorcredentials.getNewPassword());
+				doctorRepository.save(doctor);
+			}
+			else {
+				throw new InvalidCredentialsException("Email Id not matched");
+			}
+		}
+		else {
+			throw new InvalidCredentialsException("The username is not found in our data base");
 		}
 	}
 	
@@ -170,7 +189,7 @@ public class DoctorServiceImp implements DoctorService{
 	 */
 	private DoctorEntity convertModeltoEntity(Doctor doctor) {
 		DoctorEntity doctorEntity = new DoctorEntity();
-		doctorEntity.setDoctorID(doctor.getDoctorID());
+		doctorEntity.setDoctorId(doctor.getDoctorId());
 		doctorEntity.setDoctorName(doctor.getDoctorName());
 		doctorEntity.setDoctorContact(doctor.getDoctorContact());
 		doctorEntity.setDoctorDepartment(doctor.getDoctorDepartment());
@@ -191,7 +210,7 @@ public class DoctorServiceImp implements DoctorService{
 	 */
 	private Doctor convertEntitytoModel(Optional<DoctorEntity> doctorEntity) {
 		Doctor doctor = new Doctor();
-		doctor.setDoctorID(doctorEntity.get().getDoctorID());
+		doctor.setDoctorId(doctorEntity.get().getDoctorId());
 		doctor.setDoctorName(doctorEntity.get().getDoctorName());
 		doctor.setDoctorEmail(doctorEntity.get().getDoctorEmail());
 		doctor.setDoctorContact(doctorEntity.get().getDoctorContact());

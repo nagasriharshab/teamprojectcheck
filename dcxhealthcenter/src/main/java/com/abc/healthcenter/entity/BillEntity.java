@@ -22,20 +22,9 @@ public class BillEntity {
 	private double billAmount;
 	
 	@OneToOne
-	@JoinColumn(name = "appointment_id")
-	private AppointmentEntity appointment;
-	
-	@OneToOne
 	@JoinColumn(name= "payment_id")
 	private PaymentEntity payment;
 	
-	
-	public AppointmentEntity getAppointment() {
-		return appointment;
-	}
-	public void setAppointment(AppointmentEntity appointment) {
-		this.appointment = appointment;
-	}
 	public PaymentEntity getPayment() {
 		return payment;
 	}

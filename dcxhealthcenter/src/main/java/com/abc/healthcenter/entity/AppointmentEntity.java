@@ -1,6 +1,7 @@
 package com.abc.healthcenter.entity;
-
 import java.time.LocalDate;
+
+
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,23 +12,38 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.Length;
+
+/**
+ * 
+ * @author NAGA SRI HARSHA
+ * date : 09-July-2021
+ */
 @Entity
 @Table(name = "Appointment_tbl")
 public class AppointmentEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name ="appointment_id")
-	private int AppointmentId;
+	private int appointmentId;
 	
 	@Column(name ="appointment_date")
-	private LocalDate AppointmentDate;
+	private LocalDate appointmentDate;
 	
 	@Column(name = "appointment_slot")
-	private int AppointmentSlot;
+	private int appointmentSlot;
 	
+	@Column(name = "feed_back")
+	@Size(min = 1,max = 5000)
+	private String feedback;
+	
+	@Column(name = "rating")
+	private int rating;
 	@ManyToOne
 	@JoinColumn(name = "patient_id")
 	private PatientEntity patient;
@@ -36,49 +52,77 @@ public class AppointmentEntity {
 	@JoinColumn(name="doctor_id")
 	private DoctorEntity doctor;
 	
-	@OneToOne(mappedBy = "appointment",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-	private BillEntity bill;
+	@OneToOne(mappedBy="appointment", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	private PaymentEntity payment = new PaymentEntity();
+
+	/**
+	 * @return the rating
+	 */
+	public int getRating() {
+		return rating;
+	}
+
+	/**
+	 * @param rating the rating to set
+	 */
+	public void setRating(int rating) {
+		this.rating = rating;
+	}
+
+	/**
+	 * @return the feedback
+	 */
+	public String getFeedback() {
+		return feedback;
+	}
+
+	/**
+	 * @param feedback the feedback to set
+	 */
+	public void setFeedback(String feedback) {
+		this.feedback = feedback;
+	}
 
 	/**
 	 * @return the appointmentId
 	 */
 	public int getAppointmentId() {
-		return AppointmentId;
+		return appointmentId;
 	}
 
 	/**
 	 * @param appointmentId the appointmentId to set
 	 */
 	public void setAppointmentId(int appointmentId) {
-		AppointmentId = appointmentId;
+		this.appointmentId = appointmentId;
 	}
 
 	/**
 	 * @return the appointmentDate
 	 */
 	public LocalDate getAppointmentDate() {
-		return AppointmentDate;
+		return appointmentDate;
 	}
 
 	/**
 	 * @param appointmentDate the appointmentDate to set
 	 */
 	public void setAppointmentDate(LocalDate appointmentDate) {
-		AppointmentDate = appointmentDate;
+		this.appointmentDate = appointmentDate;
 	}
 
 	/**
 	 * @return the appointmentSlot
 	 */
 	public int getAppointmentSlot() {
-		return AppointmentSlot;
+		return appointmentSlot;
 	}
 
 	/**
 	 * @param appointmentSlot the appointmentSlot to set
 	 */
 	public void setAppointmentSlot(int appointmentSlot) {
-		AppointmentSlot = appointmentSlot;
+		this.appointmentSlot = appointmentSlot;
 	}
 
 	/**
@@ -110,19 +154,18 @@ public class AppointmentEntity {
 	}
 
 	/**
-	 * @return the bill
+	 * @return the payment
 	 */
-	public BillEntity getBill() {
-		return bill;
+	public PaymentEntity getPayment() {
+		return payment;
 	}
 
 	/**
-	 * @param bill the bill to set
+	 * @param payment the payment to set
 	 */
-	public void setBill(BillEntity bill) {
-		this.bill = bill;
+	public void setPayment(PaymentEntity payment) {
+		this.payment = payment;
 	}
 
-	
 	
 }

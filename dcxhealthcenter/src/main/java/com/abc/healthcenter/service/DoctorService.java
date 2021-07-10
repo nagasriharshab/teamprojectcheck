@@ -3,6 +3,7 @@ import com.abc.healthcenter.exception.InvalidCredentialsException;
 import com.abc.healthcenter.exception.ResourceAlreadyExistException;
 import com.abc.healthcenter.exception.ResourceNotFoundException;
 import com.abc.healthcenter.model.Doctor;
+import com.abc.healthcenter.model.DoctorForgetPassword;
 import com.abc.healthcenter.model.DoctorLogin;
 
 
@@ -44,6 +45,18 @@ public interface DoctorService {
   * @throws ResourceNotFoundException
   */
  public void updateDoctorbyId(Doctor doctor) throws ResourceNotFoundException;
- 
+ /**
+  * 
+  * @param doctorlogin
+  * @return the status of login as success or failure
+  * @throws InvalidCredentialsException
+  */
  public boolean checkDoctorCredentials(DoctorLogin doctorlogin) throws InvalidCredentialsException;
+ 
+ /**
+  * 
+  * @param doctorcredentials
+  * @throws InvalidCredentialsException
+  */
+ public void forgetPasword(DoctorForgetPassword doctorcredentials) throws InvalidCredentialsException;
 }

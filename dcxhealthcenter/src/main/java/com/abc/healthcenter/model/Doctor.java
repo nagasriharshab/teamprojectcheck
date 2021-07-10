@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
  */
 public class Doctor {
 	
-	private int doctorID;
+	private int doctorId;
 
 	@NotEmpty(message="please provide doctorname")
 	private String doctorName;
@@ -46,16 +46,16 @@ public class Doctor {
 	 * getter for doctorId
 	 * @return doctorId
 	 */
-	public int getDoctorID() {
-		return doctorID;
+	public int getDoctorId() {
+		return doctorId;
 	}
 
 	/**
 	 * setter for doctorId
 	 * @param doctorID
 	 */
-	public void setDoctorID(int doctorID) {
-		this.doctorID = doctorID;
+	public void setDoctorId(int doctorId) {
+		this.doctorId = doctorId;
 	}
 
 	/**

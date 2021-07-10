@@ -25,7 +25,7 @@ public class DoctorEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="doctor_id")
-	private int doctorID;
+	private int doctorId;
 
 	@Column(name="doctor_name")
 	private String doctorName;
@@ -64,16 +64,16 @@ public class DoctorEntity {
 	 * getter for doctorId
 	 * @return doctorId
 	 */
-	public int getDoctorID() {
-		return doctorID;
+	public int getDoctorId() {
+		return doctorId;
 	}
 
 	/**
 	 * setter for doctorId
 	 * @param doctorID
 	 */
-	public void setDoctorID(int doctorID) {
-		this.doctorID = doctorID;
+	public void setDoctorId(int doctorId) {
+		this.doctorId = doctorId;
 	}
 
 	/**

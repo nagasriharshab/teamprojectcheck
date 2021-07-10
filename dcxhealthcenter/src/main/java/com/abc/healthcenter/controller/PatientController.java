@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.abc.healthcenter.model.Patient;
+import com.abc.healthcenter.model.PatientForgetPassword;
+import com.abc.healthcenter.model.PatientLogin;
 import com.abc.healthcenter.model.Response;
 import com.abc.healthcenter.service.PatientService;
 
@@ -99,5 +102,32 @@ public class PatientController {
 		response.setMsg("Hi "+patient.getPatientName()+", your details have been updated");
 		response.setStatus(HttpStatus.CREATED.value());
 		return new ResponseEntity<>(response,HttpStatus.CREATED);
+	}
+	/**
+	 * Method to check the login credentials
+	 * @param patient
+	 * @return response entity containing the reply to request made and status
+	 */
+	@GetMapping("/login")
+	public ResponseEntity<Object> checkCredentials(@Valid @RequestBody PatientLogin patient){
+		boolean result = patientService.checkPatientCredentials(patient);
+		if (result) {
+			response.setMsg("Successfully logged in");
+			response.setStatus(HttpStatus.FOUND.value());
+			return new ResponseEntity<>(response,HttpStatus.FOUND);
+		}
+		else {
+			response.setMsg("Failed Login");
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+			return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@GetMapping("/forgetPassword")
+	public ResponseEntity<Object> forgetPatientPassword(@Valid @RequestBody PatientForgetPassword patient){
+		patientService.forgetPasword(patient);
+		response.setMsg("Password Successfully Updated");
+		response.setStatus(HttpStatus.OK.value());
+		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 }
