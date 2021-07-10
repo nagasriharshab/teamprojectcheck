@@ -15,10 +15,12 @@ import com.abc.healthcenter.entity.AppointmentEntity;
 import com.abc.healthcenter.entity.DoctorEntity;
 import com.abc.healthcenter.entity.PatientEntity;
 import com.abc.healthcenter.exception.ResourceAlreadyExistException;
+import com.abc.healthcenter.exception.ResourceNotAvailableException;
 import com.abc.healthcenter.exception.ResourceNotFoundException;
 import com.abc.healthcenter.exception.UnauthorisedAttemptException;
 import com.abc.healthcenter.model.Appointment;
 import com.abc.healthcenter.model.AppointmentFeedback;
+import com.abc.healthcenter.model.DoctorSlotCheck;
 import com.abc.healthcenter.repository.AppointmentRepository;
 import com.abc.healthcenter.repository.DoctorRepository;
 import com.abc.healthcenter.repository.PatientRepository;
@@ -155,7 +157,22 @@ public class AppointmentServiceImpl implements AppointmentService {
 		LOGGER.info("Exiting from AppointmentServiceImp::updateAppointmentbyId(Appointment appointment)method ");
 		
 	}
-
+	@Override
+	public List<Integer> findAvailableSlotsOfDoctor(DoctorSlotCheck slotcheck) throws ResourceNotAvailableException{
+		List<AppointmentEntity> appointmentList = appointmentRepository.findDoctorSlots(slotcheck.getCheckDate(), slotcheck.getDoctorId());
+		List<Integer> slotlist = new ArrayList<>(List.of(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15));
+		Iterator<AppointmentEntity> i = appointmentList.iterator();
+		while(i.hasNext()) {
+			AppointmentEntity appointment = i.next();
+			if(slotlist.contains(appointment.getAppointmentSlot())) {
+				slotlist.remove(appointment.getAppointmentSlot());
+			}
+		}
+		if(slotlist.isEmpty()) {
+			throw new ResourceNotAvailableException("ALL SLOTS ARE BOOKED FOR TODAY");
+		}
+		return slotlist;
+	}
 
 	@Override
 	public List<Appointment> findAppointmentsByDoctorId(int doctorId) throws ResourceNotFoundException {

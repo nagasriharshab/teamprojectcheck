@@ -54,6 +54,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		errorResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
 		return new ResponseEntity<>(errorResponse,HttpStatus.UNAUTHORIZED);
 	}
+	@ExceptionHandler(value = ResourceNotAvailableException.class)
+	public ResponseEntity<ErrorResponse> ResourceNotAvailableException(Exception e){
+		ErrorResponse errorResponse = new ErrorResponse();
+		errorResponse.setError(e.getMessage());
+		errorResponse.setStatus(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS.value());
+		return new ResponseEntity<>(errorResponse,HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS);
+	}
 	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,

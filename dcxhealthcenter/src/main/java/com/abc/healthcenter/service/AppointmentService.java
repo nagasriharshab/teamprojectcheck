@@ -3,16 +3,17 @@ package com.abc.healthcenter.service;
 import java.util.List;
 
 import com.abc.healthcenter.exception.ResourceAlreadyExistException;
-
+import com.abc.healthcenter.exception.ResourceNotAvailableException;
 import com.abc.healthcenter.exception.ResourceNotFoundException;
 import com.abc.healthcenter.exception.UnauthorisedAttemptException;
 import com.abc.healthcenter.model.Appointment;
 import com.abc.healthcenter.model.AppointmentFeedback;
+import com.abc.healthcenter.model.DoctorSlotCheck;
 
 /**
  * 
- * @author LAHARI
- *Date : 05-July-2021
+ * @author NAGA SRI HARSHA
+ * date : 10-July-2021
  */
 public interface AppointmentService {
 	/**
@@ -76,4 +77,6 @@ public interface AppointmentService {
 	 * @throws ResourceNotFoundException
 	 */
 	public String viewfeedback(int appointmentId)throws ResourceNotFoundException;
+	
+	public List<Integer> findAvailableSlotsOfDoctor(DoctorSlotCheck slotcheck) throws ResourceNotAvailableException;
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.abc.healthcenter.entity.AppointmentEntity;
+import com.abc.healthcenter.model.Doctor;
 /**
  * 
  * @author NAGA SRI HARSHA
@@ -21,4 +22,6 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
 	@Query("SELECT d FROM AppointmentEntity d WHERE d.appointmentDate =?1 AND d.appointmentSlot = ?2")
 	public List<AppointmentEntity> findAvalaibilityOfDoctor(LocalDate appointmentDate,int slot);
 
+	@Query("SELECT d FROM AppointmentEntity d WHERE d.appointmentDate = :date AND d.doctor.doctorId = :doctorId")
+	public List<AppointmentEntity> findDoctorSlots(LocalDate date,int doctorId);
 }

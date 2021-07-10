@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.abc.healthcenter.model.Appointment;
 import com.abc.healthcenter.model.AppointmentFeedback;
+import com.abc.healthcenter.model.DoctorSlotCheck;
 import com.abc.healthcenter.model.Response;
 import com.abc.healthcenter.service.AppointmentService;
 
@@ -98,10 +99,16 @@ public class AppointmentController {
 		return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
 	}
 	
-	@GetMapping("/feedback/{id}")
+	@GetMapping("/feedback/view/{id}")
 	public ResponseEntity<Object> viewfeedback(@Valid @PathVariable int id){
 		String feedback = appointmentService.viewfeedback(id);
 		return new ResponseEntity<>(feedback,HttpStatus.FOUND);
+	}
+	
+	@GetMapping("/slotcheck")
+	public ResponseEntity<Object> checkslotforDoctor(@Valid @RequestBody DoctorSlotCheck slotcheck){
+		List<Integer> availablelist = appointmentService.findAvailableSlotsOfDoctor(slotcheck);
+		return new ResponseEntity<>(availablelist,HttpStatus.FOUND);
 	}
 
 }
