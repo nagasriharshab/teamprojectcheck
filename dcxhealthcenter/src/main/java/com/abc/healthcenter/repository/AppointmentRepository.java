@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.abc.healthcenter.entity.AppointmentEntity;
-import com.abc.healthcenter.model.Doctor;
 /**
  * 
  * @author NAGA SRI HARSHA

@@ -98,16 +98,6 @@ public class PaymentServiceImpl implements PaymentService{
 			throw new ResourceNotFoundException("Cannot find any payment details with this ID "+id);
 		}
 	}
-
-	
-	@Override
-	public void updatePayment(Payment payment) {
-		
-	
-		
-	}
-	
-	
 	/**
 	 * This method converts Model to Entity
 	 * @param payment
