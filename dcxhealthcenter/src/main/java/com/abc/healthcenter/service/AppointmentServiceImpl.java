@@ -17,9 +17,7 @@ import com.abc.healthcenter.entity.PatientEntity;
 import com.abc.healthcenter.exception.ResourceAlreadyExistException;
 import com.abc.healthcenter.exception.ResourceNotAvailableException;
 import com.abc.healthcenter.exception.ResourceNotFoundException;
-import com.abc.healthcenter.exception.UnauthorisedAttemptException;
 import com.abc.healthcenter.model.Appointment;
-import com.abc.healthcenter.model.AppointmentFeedback;
 import com.abc.healthcenter.model.DoctorSlotCheck;
 import com.abc.healthcenter.repository.AppointmentRepository;
 import com.abc.healthcenter.repository.DoctorRepository;
@@ -126,137 +124,133 @@ public class AppointmentServiceImpl implements AppointmentService {
 	@Override
 	public void updateAppointmentById(Appointment appointment) throws ResourceNotFoundException {
 		
-		LOGGER.info("FindById method called from AppointmentServiceImp::updateAppointmentbyId method");
-		AppointmentEntity appointmentEntity = appointmentRepository.findById(appointment.getAppointmentId()).get();
-		
-		if(appointmentEntity == null) {
+		LOGGER.info("AppointmentRepository::findbyId(appointmentId) method called");
+		Optional<AppointmentEntity> optionalAppointmentEntity = appointmentRepository.findById(appointment.getAppointmentId());
+		if(optionalAppointmentEntity.isEmpty()) {
 			LOGGER.error("ResourceNotFoundException encountered with id "+appointment.getAppointmentId());
 			throw new ResourceNotFoundException("Cannot find appointment with this ID "+appointment);
 		}
 		else {
+			AppointmentEntity appointmentEntity = convertOptionalAppointmentEntityToAppointmentEntity(optionalAppointmentEntity);
 			appointmentEntity.setAppointmentId(appointment.getAppointmentId());
 			appointmentEntity.setAppointmentSlot(appointment.getAppointmentSlot());
 			appointmentEntity.setAppointmentDate(appointment.getAppointmentDate());
-			DoctorEntity doctorEntity = doctorRepository.findById(appointment.getDoctorId()).get();
-			if(doctorEntity == null) {
-				throw new ResourceNotFoundException("Cannot find doctor with this ID "+appointment.getDoctorId());
-			}
-			else {
+			LOGGER.info("DoctorRepository::findById method called");
+			Optional<DoctorEntity> optionalDoctorEntity = doctorRepository.findById(appointment.getDoctorId());
+			if(optionalDoctorEntity.isPresent()) {
+				DoctorEntity doctorEntity = convertOptionalEntityToDoctorEntity(optionalDoctorEntity);
 				appointmentEntity.setDoctor(doctorEntity);
 			}
-			PatientEntity patientEntity = patientRepository.findById(appointment.getPatientId()).get();
-			if(patientEntity == null) {
-				throw new ResourceNotFoundException("Cannot find Patient with this ID "+appointment.getPatientId());
+			else {
+				LOGGER.error("ResourceNotFoundException encountered with doctorId"+appointment.getDoctorId());
+				throw new ResourceNotFoundException("Cannot find doctor with this ID "+appointment.getDoctorId());
+			}
+			LOGGER.info("PatientRepository::findById method called");
+			Optional<PatientEntity> optionalPatientEntity = patientRepository.findById(appointment.getPatientId());
+			if(optionalPatientEntity.isPresent()) {
+				PatientEntity patientEntity = convertOptionalEntityToPatientEntity(optionalPatientEntity);
+				appointmentEntity.setPatient(patientEntity);
 			}
 			else {
-				appointmentEntity.setPatient(patientEntity);
+				LOGGER.error("ResourceNotFoundException encountered with this Id"+appointment.getPatientId());
+				throw new ResourceNotFoundException("Cannot find Patient with this ID "+appointment.getPatientId());
 			}
 			LOGGER.info("Appointment Details are updated");
 			appointmentRepository.save(appointmentEntity);
 		}
-		LOGGER.info("Exiting from AppointmentServiceImp::updateAppointmentbyId(Appointment appointment)method ");
+		LOGGER.debug("Exiting from AppointmentServiceImp::updateAppointmentbyId(Appointment appointment)method ");
 		
 	}
+	@SuppressWarnings("removal")
 	@Override
 	public List<Integer> findAvailableSlotsOfDoctor(DoctorSlotCheck slotcheck) throws ResourceNotAvailableException{
+		LOGGER.info("AppointmentRepository::findDoctorSlots method called");
 		List<AppointmentEntity> appointmentList = appointmentRepository.findDoctorSlots(slotcheck.getCheckDate(), slotcheck.getDoctorId());
 		List<Integer> slotlist = new ArrayList<>(List.of(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15));
 		Iterator<AppointmentEntity> i = appointmentList.iterator();
 		while(i.hasNext()) {
 			AppointmentEntity appointment = i.next();
 			if(slotlist.contains(appointment.getAppointmentSlot())) {
-				slotlist.remove(appointment.getAppointmentSlot());
+				slotlist.remove(new Integer(appointment.getAppointmentSlot()));
 			}
 		}
 		if(slotlist.isEmpty()) {
+			LOGGER.error("ResourceNotAvailableException encountered");
 			throw new ResourceNotAvailableException("ALL SLOTS ARE BOOKED FOR TODAY");
 		}
 		return slotlist;
 	}
-
+	/**
+	 * method implements findAppoinmentsByDoctorId in AppointmentService interface
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<Appointment> findAppointmentsByDoctorId(int doctorId) throws ResourceNotFoundException {
-		List<AppointmentEntity> appointmentsList = appointmentRepository.findAllByDoctor(doctorId);
-		if(appointmentsList.isEmpty()) {
-			throw new ResourceNotFoundException("Cannot find appointments with this doctorID "+doctorId);
+		LOGGER.info("DoctorRepository::findById method called");
+		Optional<DoctorEntity> optionalDoctorEntity = doctorRepository.findById(doctorId);
+		if(optionalDoctorEntity.isPresent()) {
+			DoctorEntity doctorEntity = convertOptionalEntityToDoctorEntity(optionalDoctorEntity);
+			LOGGER.info("AppointmentRepository::findAllByDoctor method called");
+			List<AppointmentEntity> appointmentsList = appointmentRepository.findAllByDoctor(doctorEntity);
+		
+			if(appointmentsList.isEmpty()) {
+				LOGGER.error("ResourceNotFoundException encountered with this doctoId"+doctorId);
+				throw new ResourceNotFoundException("Cannot find appointments with this doctorID "+doctorId);
+			}
+			else {
+				List<Appointment> appointments = new ArrayList<>();
+				Iterator<AppointmentEntity> i =  appointmentsList.iterator();
+				while(i.hasNext()) {
+					AppointmentEntity appointment = i.next();
+					Appointment appointmentModel =  convertAppointmentEntityToAppointment(appointment);
+					appointments.add(appointmentModel);
+					}
+				return  appointments;
+			}
 		}
 		else {
-			List<Appointment> appointments = new ArrayList<>();
-			Iterator<AppointmentEntity> i =  appointmentsList.iterator();
-			
-			while(i.hasNext()) {
-				AppointmentEntity appointment = i.next();
-				Appointment appointmentModel =  convertAppointmentEntityToAppointment(appointment);
-				appointments.add(appointmentModel);
-				}
-			return  appointments;
+			LOGGER.error("ResourceNotFoundException encountered with doctoId"+doctorId);
+			throw new ResourceNotFoundException("Cannot find this doctorID "+doctorId);
 		}
 	}
 
+	/**
+	 * implements findAppointentsByPatientId from AppointmentService interface
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<Appointment> findAppointmentsByPatientId(int patientId) throws ResourceNotFoundException {
-		
-		List<AppointmentEntity> appointmentsList = appointmentRepository.findAllByPatient(patientId);
-		if(appointmentsList.isEmpty()) {
-			throw new ResourceNotFoundException("Cannot find appointments with this ID "+patientId);
+		LOGGER.info("PatientRepository::existbyId method called");
+		if(patientRepository.existsById(patientId)) {
 			
-		}
-		else {
-			List<Appointment> appointments = new ArrayList<>();			
-			Iterator<AppointmentEntity> i =  appointmentsList.iterator();
-			
-			while(i.hasNext()) {
-				AppointmentEntity appointment = i.next();
-				Appointment appointmentModel =  convertAppointmentEntityToAppointment(appointment);
-				appointments.add(appointmentModel);
-				
-				
-				
-			}
-			return  appointments;
-		}
-	}
-	
-	@Override
-	public void saveFeedback(AppointmentFeedback feedback) throws ResourceAlreadyExistException,UnauthorisedAttemptException,ResourceNotFoundException {
-		 if(appointmentRepository.existsById(feedback.getAppointmentId())) {
-			 AppointmentEntity appointmentEntity = appointmentRepository.findById(feedback.getAppointmentId()).get();
-			 if(appointmentEntity.getPatient().getPatientId() == feedback.getPatientId()) {
-				 if(appointmentEntity.getFeedback().isEmpty()) {
-					 appointmentEntity.setFeedback(feedback.getFeedback());
-					 appointmentEntity.setRating(feedback.getRating());
-					 appointmentRepository.save(appointmentEntity);
-				 }else {
-					 throw new ResourceAlreadyExistException("THe feedback is already submitted for this appointment"+feedback.getAppointmentId());
-				 }
-			 }
-			 else {
-				 throw new UnauthorisedAttemptException("Sorry,You cant fill feedback for this appointment"+feedback.getPatientId());
-			 }
-		 }
-		 else {
-			 throw new ResourceNotFoundException("No appointment is scheduled with this Id"+feedback.getAppointmentId());
-		 }
-	}
-	
-	@Override
-	public String viewfeedback(int appointmentId)throws ResourceNotFoundException{
-		if(appointmentRepository.existsById(appointmentId)) {
-			String feedback = appointmentRepository.findById(appointmentId).get().getFeedback();
-			if(feedback.isEmpty()) {
-				throw new ResourceNotFoundException("Patient haven't given feedback yet"+appointmentId);
+			PatientEntity patient = patientRepository.findById(patientId).get();
+			LOGGER.info("AppointmentRepository::findAllByPatient method called");
+			List<AppointmentEntity> appointmentsList = appointmentRepository.findAllByPatient(patient);
+			if(appointmentsList.isEmpty()) {
+				LOGGER.error("ResourceNotFoundException encountered with this Id"+patientId);
+				throw new ResourceNotFoundException("Cannot find appointments with this ID "+patientId);
 			}
 			else {
-				return feedback;
+				List<Appointment> appointments = new ArrayList<>();			
+				Iterator<AppointmentEntity> i =  appointmentsList.iterator();
+			
+				while(i.hasNext()) {
+					AppointmentEntity appointment = i.next();
+					Appointment appointmentModel =  convertAppointmentEntityToAppointment(appointment);
+					appointments.add(appointmentModel);	
+					}
+				return  appointments;
+				}	
 			}
-		}
 		else {
-			throw new ResourceNotFoundException("No appointment is scheduled with this Id"+appointmentId);
-		}
+			LOGGER.error("ResourceNotFoundException encountered with this Id"+patientId);
+			throw new ResourceNotFoundException("Cannot find this ID "+patientId);
+			}
 	}
+	
+	
 	public DoctorEntity convertOptionalEntityToDoctorEntity(Optional<DoctorEntity> optionalDoctorEntity) {
 		DoctorEntity doctorEntity = new DoctorEntity();
-		doctorEntity.setDoctorId(optionalDoctorEntity.get().getDoctorId());
 		doctorEntity.setDoctorId(optionalDoctorEntity.get().getDoctorId());
 		doctorEntity.setDoctorName(optionalDoctorEntity.get().getDoctorName());
 		doctorEntity.setDoctorEmail(optionalDoctorEntity.get().getDoctorEmail());
@@ -302,25 +296,34 @@ public class AppointmentServiceImpl implements AppointmentService {
 		appointment.setPatientId(appointmentEntity.get().getPatient().getPatientId());
 		return appointment;
 	}
+	
+	public AppointmentEntity convertOptionalAppointmentEntityToAppointmentEntity(Optional<AppointmentEntity> appointmentEntity) {
+		AppointmentEntity appointment = new AppointmentEntity();
+		appointment.setAppointmentDate(appointmentEntity.get().getAppointmentDate());
+		appointment.setAppointmentId(appointmentEntity.get().getAppointmentId());
+		appointment.setAppointmentSlot(appointmentEntity.get().getAppointmentSlot());
+		appointment.setDoctor(appointmentEntity.get().getDoctor());
+		appointment.setPatient(appointmentEntity.get().getPatient());
+		return appointment;
+	}
+	
 	public AppointmentEntity convertAppointmentToAppointmentEntity(Appointment appointment) {
 		AppointmentEntity appointmentEntity = new AppointmentEntity();
 		appointmentEntity.setAppointmentId(appointment.getAppointmentId());
 		appointmentEntity.setAppointmentSlot(appointment.getAppointmentSlot());
 		appointmentEntity.setAppointmentDate(appointment.getAppointmentDate());
-		
+		LOGGER.info("DoctorRepository::findById method called");
 		Optional<DoctorEntity> optionalDoctorEntity = doctorRepository.findById(appointment.getDoctorId());
 		if(optionalDoctorEntity.isPresent()) {
 			DoctorEntity doctorEntity = convertOptionalEntityToDoctorEntity(optionalDoctorEntity); 
 			appointmentEntity.setDoctor(doctorEntity);
 		}
-		
+		LOGGER.info("PatientRepository::findById method called");
 		Optional<PatientEntity> optionalPatientEntity = patientRepository.findById(appointment.getPatientId());
 		if(optionalPatientEntity.isPresent()) {
 			PatientEntity patientEntity = convertOptionalEntityToPatientEntity(optionalPatientEntity);
 			appointmentEntity.setPatient(patientEntity);
 		}
-		
-		appointmentEntity.setPayment(null);
 		return appointmentEntity;
 	}
 }

@@ -14,7 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 
 /**
  * 
@@ -25,7 +24,7 @@ import javax.validation.constraints.Size;
 @Table(name = "Appointment_tbl")
 public class AppointmentEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name ="appointment_id")
 	private int appointmentId;
 	
@@ -35,12 +34,9 @@ public class AppointmentEntity {
 	@Column(name = "appointment_slot")
 	private int appointmentSlot;
 	
-	@Column(name = "feed_back")
-	@Size(min = 1,max = 5000)
-	private String feedback;
+	@OneToOne(mappedBy="appointment", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	private AppointmentFeedbackEntity feedback = new AppointmentFeedbackEntity();
 	
-	@Column(name = "rating")
-	private int rating;
 	@ManyToOne
 	@JoinColumn(name = "patient_id")
 	private PatientEntity patient;
@@ -53,34 +49,7 @@ public class AppointmentEntity {
 	private PaymentEntity payment = new PaymentEntity();
 
 	/**
-	 * @return the rating
-	 */
-	public int getRating() {
-		return rating;
-	}
-
-	/**
-	 * @param rating the rating to set
-	 */
-	public void setRating(int rating) {
-		this.rating = rating;
-	}
-
-	/**
-	 * @return the feedback
-	 */
-	public String getFeedback() {
-		return feedback;
-	}
-
-	/**
-	 * @param feedback the feedback to set
-	 */
-	public void setFeedback(String feedback) {
-		this.feedback = feedback;
-	}
-
-	/**
+	 * getter for appointmentId
 	 * @return the appointmentId
 	 */
 	public int getAppointmentId() {
@@ -88,6 +57,7 @@ public class AppointmentEntity {
 	}
 
 	/**
+	 * setter for appointmentId
 	 * @param appointmentId the appointmentId to set
 	 */
 	public void setAppointmentId(int appointmentId) {
@@ -95,6 +65,7 @@ public class AppointmentEntity {
 	}
 
 	/**
+	 * getter for appointmentDate
 	 * @return the appointmentDate
 	 */
 	public LocalDate getAppointmentDate() {
@@ -102,6 +73,7 @@ public class AppointmentEntity {
 	}
 
 	/**
+	 * setter for AppointmentDate
 	 * @param appointmentDate the appointmentDate to set
 	 */
 	public void setAppointmentDate(LocalDate appointmentDate) {
@@ -109,6 +81,7 @@ public class AppointmentEntity {
 	}
 
 	/**
+	 * getter for appointmentSlot
 	 * @return the appointmentSlot
 	 */
 	public int getAppointmentSlot() {
@@ -116,6 +89,7 @@ public class AppointmentEntity {
 	}
 
 	/**
+	 * setter for appointmentSlot
 	 * @param appointmentSlot the appointmentSlot to set
 	 */
 	public void setAppointmentSlot(int appointmentSlot) {
@@ -123,6 +97,23 @@ public class AppointmentEntity {
 	}
 
 	/**
+	 * getter for feedbackEntity
+	 * @return the feedback
+	 */
+	public AppointmentFeedbackEntity getFeedback() {
+		return feedback;
+	}
+
+	/**
+	 * setter for feedbackEntity
+	 * @param feedback the feedback to set
+	 */
+	public void setFeedback(AppointmentFeedbackEntity feedback) {
+		this.feedback = feedback;
+	}
+
+	/**
+	 * getter for patientEntity
 	 * @return the patient
 	 */
 	public PatientEntity getPatient() {
@@ -130,6 +121,7 @@ public class AppointmentEntity {
 	}
 
 	/**
+	 * setter for patientEntity
 	 * @param patient the patient to set
 	 */
 	public void setPatient(PatientEntity patient) {
@@ -137,6 +129,7 @@ public class AppointmentEntity {
 	}
 
 	/**
+	 * getter for doctorEntity
 	 * @return the doctor
 	 */
 	public DoctorEntity getDoctor() {
@@ -144,6 +137,7 @@ public class AppointmentEntity {
 	}
 
 	/**
+	 * setter for doctorEntity
 	 * @param doctor the doctor to set
 	 */
 	public void setDoctor(DoctorEntity doctor) {
@@ -151,6 +145,7 @@ public class AppointmentEntity {
 	}
 
 	/**
+	 * getter for paymentEntity
 	 * @return the payment
 	 */
 	public PaymentEntity getPayment() {
@@ -158,11 +153,13 @@ public class AppointmentEntity {
 	}
 
 	/**
+	 * setter for paymentEntity
 	 * @param payment the payment to set
 	 */
 	public void setPayment(PaymentEntity payment) {
 		this.payment = payment;
 	}
 
+	
 	
 }

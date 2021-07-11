@@ -23,7 +23,7 @@ import javax.persistence.Table;
 public class DoctorEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="doctor_id")
 	private int doctorId;
 

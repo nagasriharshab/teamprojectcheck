@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.abc.healthcenter.model.Appointment;
-import com.abc.healthcenter.model.AppointmentFeedback;
 import com.abc.healthcenter.model.DoctorSlotCheck;
 import com.abc.healthcenter.model.Response;
 import com.abc.healthcenter.service.AppointmentService;
@@ -89,20 +88,6 @@ public class AppointmentController {
 	public ResponseEntity<Object> findAppointmentsByPatient(@Valid @Min(1) @PathVariable int id){
 		List<Appointment> appointment = appointmentService.findAppointmentsByPatientId(id);
 		return new ResponseEntity<>(appointment,HttpStatus.FOUND);
-	}
-	
-	@PostMapping("/feedback/save")
-	public ResponseEntity<Object> savefeedback(@Valid @RequestBody AppointmentFeedback feedback){
-		appointmentService.saveFeedback(feedback);
-		response.setMsg("your feedback is saved");
-		response.setStatus(HttpStatus.ACCEPTED.value());
-		return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
-	}
-	
-	@GetMapping("/feedback/view/{id}")
-	public ResponseEntity<Object> viewfeedback(@Valid @PathVariable int id){
-		String feedback = appointmentService.viewfeedback(id);
-		return new ResponseEntity<>(feedback,HttpStatus.FOUND);
 	}
 	
 	@GetMapping("/slotcheck")

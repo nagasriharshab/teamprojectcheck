@@ -77,17 +77,4 @@ public class PaymentController {
 		response.setStatus(HttpStatus.FOUND.value());
 		return new ResponseEntity<>(response,HttpStatus.FOUND);
 	}
-	
-	/**
-	 * 
-	 * @param payment
-	 * @return
-	 */
-	@PostMapping("/update")
-	public ResponseEntity<?> updatePayment(@Valid @RequestBody Payment payment) {		
-		LOGGER.info("PaymentServiceImpl::updatePayment(Payment payment) method called");
-		paymentService.updatePayment(payment);
-		return new ResponseEntity<>("Hello "+""+", Your payment is updated successfully ",HttpStatus.CREATED);
-	}
-
 }

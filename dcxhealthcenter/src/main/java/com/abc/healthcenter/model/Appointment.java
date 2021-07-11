@@ -5,7 +5,7 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Positive;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class Appointment {
 	
 	@NotNull(message = "please provide id")
+	@Positive(message = "please provide valid appointmentId")
 	private int appointmentId;
 	 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -31,49 +32,18 @@ public class Appointment {
     @Max(value = 15, message = "there are only 15 slots available")
 	@NotNull(message = "please provide slot")
 	private int appointmentSlot;
-	
-	@Size(min =1,max = 500, message = "feedback must be limited to 500 words")
-	private String feedback;
-	
-	@Min(value = 1, message = "rating cannot be less than 1")
-    @Max(value = 10, message = "rating cannot be more than 10")
-	private int rating;
-	
+
 	@NotNull(message = "please provide Patient id")
+	@Positive(message = "please provide valid patientId")
 	private int patientId;
 	
 	@NotNull(message = "please provide Doctor id")
+	@Positive(message = "please provide valid doctorId")
 	private int doctorId;
 	
+	
 	/**
-	 * @return the rating
-	 */
-	public int getRating() {
-		return rating;
-	}
-
-	/**
-	 * @param rating the rating to set
-	 */
-	public void setRating(int rating) {
-		this.rating = rating;
-	}
-
-	/**
-	 * @return the feedback
-	 */
-	public String getFeedback() {
-		return feedback;
-	}
-
-	/**
-	 * @param feedback the feedback to set
-	 */
-	public void setFeedback(String feedback) {
-		this.feedback = feedback;
-	}
-
-	/**
+	 * getter for appointmentId
 	 * @return the appointmentId
 	 */
 	public int getAppointmentId() {
@@ -81,13 +51,14 @@ public class Appointment {
 	}
 
 	/**
+	 * setter for appointmentId
 	 * @param appointmentId the appointmentId to set
 	 */
 	public void setAppointmentId(int appointmentId) {
 		this.appointmentId = appointmentId;
 	}
 
-	/**
+	/**getter for appointmentDate
 	 * @return the appointmentDate
 	 */
 	public LocalDate getAppointmentDate() {
@@ -95,6 +66,7 @@ public class Appointment {
 	}
 
 	/**
+	 * setter for appointmentDate
 	 * @param appointmentDate the appointmentDate to set
 	 */
 	public void setAppointmentDate(LocalDate appointmentDate) {
@@ -102,6 +74,7 @@ public class Appointment {
 	}
 
 	/**
+	 * getter for appointmentSlot
 	 * @return the appointmentSlot
 	 */
 	public int getAppointmentSlot() {
@@ -109,6 +82,7 @@ public class Appointment {
 	}
 
 	/**
+	 * setter for appointmentSlot
 	 * @param appointmentSlot the appointmentSlot to set
 	 */
 	public void setAppointmentSlot(int appointmentSlot) {
@@ -116,6 +90,7 @@ public class Appointment {
 	}
 
 	/**
+	 * getter for patientId
 	 * @return the patientId
 	 */
 	public int getPatientId() {
@@ -123,6 +98,7 @@ public class Appointment {
 	}
 
 	/**
+	 * setter for patientId
 	 * @param patientId the patientId to set
 	 */
 	public void setPatientId(int patientId) {
@@ -130,6 +106,7 @@ public class Appointment {
 	}
 
 	/**
+	 * getter for doctorId
 	 * @return the doctorId
 	 */
 	public int getDoctorId() {
@@ -137,15 +114,13 @@ public class Appointment {
 	}
 
 	/**
+	 * setter or doctorId
 	 * @param doctorId the doctorId to set
 	 */
 	public void setDoctorId(int doctorId) {
 		this.doctorId = doctorId;
 	}
-
-	/**
-	 * @return the billId
-	 */	
+	
 }
 
 

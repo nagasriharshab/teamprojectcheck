@@ -60,7 +60,6 @@ public class PatientEntity {
 	
 	@OneToMany(mappedBy="patient", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<PaymentEntity> payments = new ArrayList<>();
-	
 
 	/**
 	 * getter method for patient username

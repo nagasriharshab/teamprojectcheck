@@ -19,7 +19,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.abc.healthcenter.model.ErrorResponse;
 
 
-
+/**
+ * 
+ * @author NAGA SRI HARSHA
+ * date : 11-July-2021
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
