@@ -13,7 +13,10 @@ public class InvalidCredentialsException extends RuntimeException {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	/**
+	 * constructor for ExceptionMessage
+	 * @param message
+	 */
 	public InvalidCredentialsException(String message) {
 		super(message);
 	}

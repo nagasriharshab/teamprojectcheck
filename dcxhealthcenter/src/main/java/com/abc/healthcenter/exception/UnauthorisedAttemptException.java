@@ -13,6 +13,10 @@ public class UnauthorisedAttemptException extends RuntimeException{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * constructor for Exception Message
+	 * @param msg
+	 */
 	public UnauthorisedAttemptException(String msg) {
 		super(msg);
 	}
